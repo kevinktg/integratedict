@@ -1,0 +1,1029 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Definitive AI Audit & Assistant: Integrated ICT</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <!-- Chosen Palette: Custom Professional -->
+        <!-- Application Structure Plan: This definitive version is structured as a final, high-impact executive report, augmented with a dedicated floating chatbot for interactive inquiry. It leads with the overall score, followed by the Readiness Breakdown (Radar Chart), the S2A Methodology, and the Dimensional Deep Dive (Interactive Tabs). The report concludes with Strategic Recommendations and a Next Steps resource section. The chatbot is integrated to allow non-linear, query-based exploration of all report facts, enhancing user synthesis and understanding. -->
+        <!-- Visualization & Content Choices:
+        - Final Score -> Inform -> Big Number & Doughnut Chart -> Justification: Provides immediate, high-impact communication of the final, verified score.
+        - Dimensional Overview -> Compare -> Radar Chart (Chart.js) -> Interaction: Hover -> Justification: Offers the best at-a-glance comparison of the five key dimensions.
+        - S2A Process -> Organize -> Flowchart (HTML/CSS) -> Justification: Visually demonstrates the rigorous and unbiased methodology.
+        - Detailed Analysis -> Organize/Inform -> Interactive Tabs (HTML/JS) -> Interaction: Click-to-reveal -> Justification: The most effective way to present the rich, detailed evidence without overwhelming the user.
+        - Recommendations -> Inform -> Priority-Scored Cards (HTML/CSS) -> Justification: Presents the final, actionable outputs with priority scores.
+        - Audit Assistant Chatbot -> Synthesize -> Floating Window (HTML/CSS/JS) -> Interaction: Text Query -> Justification: Provides immediate, contextual Q&A based on the report's content.
+    -->
+        <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+        <style>
+            body {
+                font-family: "Inter", sans-serif;
+                background-color: #f5efe1;
+                color: #343434;
+            }
+            .chart-container {
+                position: relative;
+                width: 100%;
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+                height: 350px;
+                max-height: 400px;
+            }
+            @media (min-width: 768px) {
+                .chart-container {
+                    height: 400px;
+                }
+            }
+            .card {
+                background-color: #ffffff;
+                border-radius: 0.75rem;
+                box-shadow:
+                    0 4px 6px -1px rgb(0 0 0 / 0.1),
+                    0 2px 4px -2px rgb(0 0 0 / 0.1);
+            }
+            .tab-button {
+                transition: all 0.3s ease;
+            }
+            .tab-button.active {
+                background-color: #28aea7;
+                color: white;
+                box-shadow: 0 4px 14px 0 rgba(40, 174, 167, 0.39);
+            }
+            .tab-content {
+                display: none;
+            }
+            .tab-content.active {
+                display: block;
+            }
+            .list-bullet {
+                list-style-type: "✓  ";
+                padding-left: 1rem;
+            }
+            .flowchart-step {
+                background-color: #e0f2fe;
+                color: #0a4090;
+                border-left: 4px solid #28aea7;
+            }
+            .flowchart-arrow {
+                color: #28aea7;
+            }
+
+            /* Chatbot Specific Styles - RE-THEMED and RESIZED */
+            #chat-window {
+                position: fixed;
+                bottom: 20px;
+                left: 20px; /* Anchored to bottom left */
+                width: 90%;
+                max-width: 450px; /* Increased size */
+                height: 500px;
+                z-index: 1000;
+                display: none;
+                flex-direction: column;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                border-radius: 12px;
+                overflow: hidden;
+                background-color: #fff;
+            }
+            #chat-toggle {
+                position: fixed;
+                bottom: 20px;
+                left: 20px; /* Anchored to bottom left */
+                background-color: #0a4090; /* Accent */
+                color: white;
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                z-index: 1001;
+            }
+            #chat-header {
+                background-color: #0a4090; /* Accent */
+                color: white;
+                padding: 12px;
+                font-weight: bold;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            #chat-messages {
+                flex-grow: 1;
+                padding: 15px;
+                overflow-y: auto;
+                background-color: #f5efe1; /* Neutral Light */
+            }
+            .message {
+                margin-bottom: 10px;
+                max-width: 85%;
+                font-size: 0.9rem;
+            }
+            .message.bot {
+                background-color: #28aea7; /* Primary */
+                color: white;
+                padding: 8px 12px;
+                border-radius: 10px 10px 10px 0;
+                align-self: flex-start;
+            }
+            .message.user {
+                background-color: #e2e8f0; /* Light Neutral */
+                color: #343434;
+                padding: 8px 12px;
+                border-radius: 10px 10px 0 10px;
+                margin-left: auto;
+            }
+            #chat-input-area {
+                display: flex;
+                border-top: 1px solid #e2e8f0;
+            }
+            #chat-input {
+                flex-grow: 1;
+                padding: 10px;
+                border: none;
+                outline: none;
+            }
+            #send-button {
+                background-color: #28aea7; /* Primary */
+                color: white;
+                padding: 10px;
+                cursor: pointer;
+                transition: background-color 0.2s;
+            }
+            #send-button:hover {
+                background-color: #e09453; /* Secondary on hover */
+            }
+        </style>
+    </head>
+    <body class="bg-[#f5efe1]">
+        <div class="container mx-auto p-4 sm:p-6 md:p-8">
+            <header class="text-center mb-10">
+                <img
+                    src="/assets/images/gem.png"
+                    alt="Company Logo"
+                    class="w-24 h-24 mx-auto mb-4"
+                />
+                <h1 class="text-4xl md:text-5xl font-extrabold text-[#0A4090]">
+                    Definitive AI Opportunity Report
+                </h1>
+                <p class="text-xl md:text-2xl text-[#343434] mt-2">
+                    Based on Comprehensive Deep Dive Data
+                </p>
+                <div
+                    class="mt-6 max-w-xl mx-auto bg-white/60 p-4 rounded-lg shadow-sm"
+                >
+                    <h3 class="text-lg font-semibold text-[#0A4090] mb-2">
+                        Audio Overview
+                    </h3>
+                    <audio controls class="w-full">
+                        <source
+                            src="/assets/audio/audio.mp3"
+                            type="audio/mpeg"
+                        />
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+            </header>
+
+            <main>
+                <section id="overall-score" class="mb-12">
+                    <div
+                        class="bg-white rounded-xl shadow-lg p-6 md:p-8 max-w-4xl mx-auto"
+                    >
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"
+                        >
+                            <div class="text-center md:text-left">
+                                <h2
+                                    class="text-2xl font-bold text-[#0A4090] mb-2"
+                                >
+                                    Overall AI Opportunity Score
+                                </h2>
+                                <p
+                                    class="text-8xl font-extrabold text-[#28AEA7]"
+                                >
+                                    87<span class="text-5xl text-[#E09453]"
+                                        >/100</span
+                                    >
+                                </p>
+                                <div
+                                    class="mt-4 p-4 bg-[#28aea7]/10 rounded-lg border-l-4 border-[#28AEA7]"
+                                >
+                                    <p
+                                        class="text-lg font-semibold text-[#0A4090]"
+                                    >
+                                        What This Means:
+                                    </p>
+                                    <p class="text-[#343434]">
+                                        Your organization has a **strong
+                                        foundation** and is highly prepared to
+                                        implement and benefit from advanced AI
+                                        solutions across multiple business
+                                        functions.
+                                    </p>
+                                </div>
+                            </div>
+                            <div
+                                class="chart-container h-64 md:h-80 max-w-xs md:max-w-sm"
+                            >
+                                <canvas id="overallScoreChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="score-comparison" class="mb-12">
+                    <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                        <h2
+                            class="text-3xl font-bold text-[#0A4090] text-center mb-2"
+                        >
+                            Readiness Breakdown
+                        </h2>
+                        <p
+                            class="text-center text-[#343434] max-w-3xl mx-auto mb-8"
+                        >
+                            This analysis of five key dimensions reveals a
+                            well-rounded and robust digital infrastructure. The
+                            high scores across the board, particularly in
+                            Operational Processes and Technical Readiness,
+                            indicate a strong capacity for successful AI
+                            adoption. The chart below allows for an at-a-glance
+                            comparison of these core areas.
+                        </p>
+                        <div class="chart-container h-96 md:h-[50vh]">
+                            <canvas id="breakdownChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="methodology" class="mb-12">
+                    <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                        <h2
+                            class="text-3xl font-bold text-[#0A4090] text-center mb-2"
+                        >
+                            Our Audit Process (S2A Framework)
+                        </h2>
+                        <p
+                            class="text-center text-[#343434] max-w-3xl mx-auto mb-8"
+                        >
+                            To ensure an objective and comprehensive analysis,
+                            we employ the Synthesize-Analyze-Advise (S2A)
+                            framework. This structured methodology guarantees
+                            that our findings are based entirely on verifiable
+                            public data, providing a true outside-in perspective
+                            of your organization's AI readiness.
+                        </p>
+                        <div class="flex flex-col items-center space-y-4">
+                            <div
+                                class="w-full max-w-md flowchart-step p-4 rounded-lg bg-[#f5efe1]"
+                            >
+                                <h3 class="font-bold text-lg">
+                                    1. Deep Dive: Data Collection
+                                </h3>
+                                <p>
+                                    We perform a comprehensive deep dive of your
+                                    public-facing website to gather all textual
+                                    and structural data.
+                                </p>
+                            </div>
+                            <div
+                                class="font-extrabold text-2xl flowchart-arrow"
+                            >
+                                ↓
+                            </div>
+                            <div
+                                class="w-full max-w-md flowchart-step p-4 rounded-lg bg-[#f5efe1]"
+                            >
+                                <h3 class="font-bold text-lg">
+                                    2. Synthesize: Evidence Grouping
+                                </h3>
+                                <p>
+                                    The raw data is processed and categorized
+                                    into the five core dimensions of AI
+                                    readiness.
+                                </p>
+                            </div>
+                            <div
+                                class="font-extrabold text-2xl flowchart-arrow"
+                            >
+                                ↓
+                            </div>
+                            <div
+                                class="w-full max-w-md flowchart-step p-4 rounded-lg bg-[#f5efe1]"
+                            >
+                                <h3 class="font-bold text-lg">
+                                    3. Analyze: Scoring & Reasoning
+                                </h3>
+                                <p>
+                                    Experts analyze the synthesized evidence for
+                                    each dimension, assign a score, and
+                                    formulate a clear reasoning chain.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="dimensional-analysis" class="mb-12">
+                    <h2
+                        class="text-3xl font-bold text-[#0A4090] text-center mb-2"
+                    >
+                        Dimensional Deep Dive
+                    </h2>
+                    <p
+                        class="text-center text-[#343434] max-w-3xl mx-auto mb-8"
+                    >
+                        This section provides the detailed evidence and
+                        reasoning behind each dimensional score. Use the tabs
+                        below to interactively explore the specific data points
+                        collected from the deep dive and understand how they
+                        contribute to the overall analysis.
+                    </p>
+                    <div
+                        class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8"
+                    >
+                        <button
+                            data-tab="cx"
+                            class="tab-button active text-sm md:text-base font-semibold py-2 px-4 rounded-full bg-white shadow-sm border border-gray-200"
+                        >
+                            Customer Experience (85)
+                        </button>
+                        <button
+                            data-tab="ops"
+                            class="tab-button text-sm md:text-base font-semibold py-2 px-4 rounded-full bg-white shadow-sm border border-gray-200"
+                        >
+                            Operational Processes (90)
+                        </button>
+                        <button
+                            data-tab="content"
+                            class="tab-button text-sm md:text-base font-semibold py-2 px-4 rounded-full bg-white shadow-sm border border-gray-200"
+                        >
+                            Content Management (88)
+                        </button>
+                        <button
+                            data-tab="data"
+                            class="tab-button text-sm md:text-base font-semibold py-2 px-4 rounded-full bg-white shadow-sm border border-gray-200"
+                        >
+                            Data Utilization (82)
+                        </button>
+                        <button
+                            data-tab="tech"
+                            class="tab-button text-sm md:text-base font-semibold py-2 px-4 rounded-full bg-white shadow-sm border border-gray-200"
+                        >
+                            Technical Readiness (92)
+                        </button>
+                    </div>
+                    <div
+                        id="tab-contents"
+                        class="card p-6 md:p-8 min-h-[350px]"
+                    >
+                        <div id="cx-content" class="tab-content active"></div>
+                        <div id="ops-content" class="tab-content"></div>
+                        <div id="content-content" class="tab-content"></div>
+                        <div id="data-content" class="tab-content"></div>
+                        <div id="tech-content" class="tab-content"></div>
+                    </div>
+                </section>
+
+                <section id="action-plan" class="mb-12">
+                    <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                        <h2
+                            class="text-3xl font-bold text-[#0A4090] text-center mb-2"
+                        >
+                            Strategic AI Recommendations
+                        </h2>
+                        <p
+                            class="text-center text-[#343434] max-w-3xl mx-auto mb-8"
+                        >
+                            Based on the comprehensive audit, we have identified
+                            three high-impact AI initiatives that align with
+                            your organization's strengths. These recommendations
+                            are prioritized to provide the most strategic value
+                            and are presented with an estimate of implementation
+                            confidence.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div
+                                class="flex flex-col text-center p-6 bg-white border-2 border-slate-200 rounded-lg shadow-md"
+                            >
+                                <h3 class="text-xl font-bold text-[#0A4090]">
+                                    AI-Powered Customer Support
+                                </h3>
+                                <p
+                                    class="text-sm font-bold text-slate-500 mb-2"
+                                >
+                                    Priority: 95/100
+                                </p>
+                                <p class="text-[#343434] mt-2 flex-grow">
+                                    Leverage your strong technical foundation
+                                    and existing content to deploy an AI support
+                                    agent. This can handle initial queries,
+                                    route complex issues, and provide 24/7
+                                    assistance, enhancing customer experience
+                                    and freeing up expert staff.
+                                </p>
+                                <p class="font-bold text-[#0A4090] mt-4">
+                                    Implementation Confidence: High
+                                </p>
+                            </div>
+                            <div
+                                class="flex flex-col text-center p-6 bg-white border-2 border-slate-200 rounded-lg shadow-md"
+                            >
+                                <h3 class="text-xl font-bold text-[#0A4090]">
+                                    Predictive Analytics Dashboard
+                                </h3>
+                                <p
+                                    class="text-sm font-bold text-slate-500 mb-2"
+                                >
+                                    Priority: 88/100
+                                </p>
+                                <p class="text-[#343434] mt-2 flex-grow">
+                                    Build on your stated interest in analytics
+                                    and Microsoft Copilot usage. Create a
+                                    predictive business analytics dashboard to
+                                    offer data-driven insights as a service to
+                                    your clients, creating a new, high-value
+                                    revenue stream.
+                                </p>
+                                <p class="font-bold text-[#0A4090] mt-4">
+                                    Implementation Confidence: Medium-High
+                                </p>
+                            </div>
+                            <div
+                                class="flex flex-col text-center p-6 bg-white border-2 border-slate-200 rounded-lg shadow-md"
+                            >
+                                <h3 class="text-xl font-bold text-[#0A4090]">
+                                    AI-Enhanced Documentation
+                                </h3>
+                                <p
+                                    class="text-sm font-bold text-slate-500 mb-2"
+                                >
+                                    Priority: 85/100
+                                </p>
+                                <p class="text-[#343434] mt-2 flex-grow">
+                                    Extend your current use of Copilot for
+                                    summarization. Implement a full AI-enhanced
+                                    documentation system that helps your large
+                                    team create, find, and maintain consistent
+                                    documentation across all services, improving
+                                    internal efficiency.
+                                </p>
+                                <p class="font-bold text-[#0A4090] mt-4">
+                                    Implementation Confidence: High
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="next-steps" class="mb-12">
+                    <div
+                        class="bg-white rounded-xl shadow-lg p-6 md:p-8 text-center"
+                    >
+                        <h2
+                            class="text-3xl font-bold text-[#0A4090] text-center mb-8"
+                        >
+                            Next Steps & Resources
+                        </h2>
+                        <div class="max-w-4xl mx-auto">
+                            <h3 class="text-xl font-bold text-[#0A4090] mb-4">
+                                Video Walkthrough
+                            </h3>
+                            <div
+                                class="bg-slate-200 rounded-lg shadow-inner aspect-video"
+                            >
+                                <video
+                                    controls
+                                    poster="https://placehold.co/1280x720/f5efe1/343434?text=Video+Instructions"
+                                    class="w-full h-full rounded-lg"
+                                >
+                                    <source
+                                        src="/assets/video/video.mp4"
+                                        type="video/mp4"
+                                    />
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </div>
+                        <div
+                            class="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4"
+                        >
+                            <a
+                                href="https://notebooklm.google.com/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="bg-[#28AEA7] text-white font-bold py-3 px-8 rounded-lg hover:bg-[#0A4090] transition-transform transform hover:scale-105 shadow-lg"
+                                >Launch NotebookLM</a
+                            >
+                            <a
+                                href="/assets/report.pdf"
+                                download="AI_Opportunity_Report.pdf"
+                                class="bg-[#E09453] text-white font-bold py-3 px-8 rounded-lg hover:bg-[#0A4090] transition-transform transform hover:scale-105 shadow-lg"
+                                >Download Report (PDF)</a
+                            >
+                            <a
+                                href="/assets/iict.zip"
+                                download="iict_assets.zip"
+                                class="bg-[#0A4090] text-white font-bold py-3 px-8 rounded-lg hover:bg-[#28AEA7] transition-transform transform hover:scale-105 shadow-lg"
+                                >Download All Assets (ZIP)</a
+                            >
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <footer class="text-center mt-12 pt-6 border-t border-[#28AEA7]/50">
+                <!-- Personalized Image Placeholder -->
+                <div class="mb-4 flex justify-center">
+                    <img
+                        src="/assets/images/profile.jpg"
+                        alt="Kev - Good AI Australia Founder"
+                        onerror="this.onerror=null; this.src='https://placehold.co/64x64/0A4090/f5efe1?text=Kev'"
+                        class="w-16 h-16 rounded-full border-2 border-[#E09453] shadow-md object-cover"
+                    />
+                </div>
+                <p class="text-[#343434] max-w-3xl mx-auto">
+                    Good AI Australia will not have the solution to all your
+                    recommended next steps as we are at pre-startup phase - we
+                    are happy to help where we can though.
+                </p>
+                <p class="text-sm text-[#0A4090] mt-4">
+                    Assessment Methodology Confidence: <strong>85%</strong>
+                </p>
+            </footer>
+        </div>
+
+        <!-- Chatbot Toggle Button -->
+        <div id="chat-toggle">
+            <img
+                src="/assets/images/gem.png"
+                alt="AI Assistant"
+                style="width: 40px; height: 40px"
+            />
+        </div>
+
+        <!-- Chatbot Window -->
+        <div id="chat-window">
+            <div id="chat-header">
+                <span>Audit Assistant</span>
+                <button
+                    id="close-button"
+                    class="text-lg leading-none font-extrabold"
+                >
+                    &times;
+                </button>
+            </div>
+            <div id="chat-messages"></div>
+            <div id="chat-input-area">
+                <input
+                    type="text"
+                    id="chat-input"
+                    placeholder="Ask about the scores or recommendations..."
+                    onkeypress="if(event.key === 'Enter') document.getElementById('send-button').click()"
+                />
+                <button id="send-button">Send</button>
+            </div>
+        </div>
+
+        <script>
+            const colorPalette = {
+                primary: "#28AEA7",
+                secondary: "#E09453",
+                accent: "#0A4090",
+                neutralLight: "#f5efe1",
+                neutralDark: "#343434",
+            };
+
+            const auditData = {
+                cx: {
+                    title: "Customer Experience",
+                    score: 85,
+                    color: colorPalette.primary,
+                    evidence: [
+                        "Professional, modern website design with clear navigation structure.",
+                        "Multiple contact options (phone, email, contact forms).",
+                        "Service pages with detailed descriptions and visual elements.",
+                        "Responsive design elements visible in image layouts.",
+                    ],
+                    reasoning:
+                        'The website demonstrates a professional appearance and provides multiple engagement paths. However, the score is limited from reaching the "Exceptional" range due to a lack of visible personalization or interactive elements beyond a standard business site.',
+                },
+                ops: {
+                    title: "Operational Processes",
+                    score: 90,
+                    color: colorPalette.accent,
+                    evidence: [
+                        "Multiple specialized service offerings with dedicated pages.",
+                        "Online forms for various business processes (account creation, device retirement).",
+                        "Document management system visible through news and resource sections.",
+                        "Evidence of internal AI usage for document summarization and meeting prep.",
+                    ],
+                    reasoning:
+                        "Digitized workflows, a sophisticated service delivery model, and evidence of internal AI usage for process automation justify an advanced rating. The organization shows a clear commitment to operational efficiency.",
+                },
+                content: {
+                    title: "Content Management",
+                    score: 88,
+                    color: colorPalette.primary,
+                    evidence: [
+                        "Regular news updates with the latest articles appearing current.",
+                        "Consistent content structure across news articles and service pages.",
+                        "Organized service categorization with consistent formatting.",
+                        "Dedicated sections for different content types (news, services, team profiles).",
+                    ],
+                    reasoning:
+                        "Recent and regular content updates indicate an active and efficient management process. The systematic approach to content structure and organization demonstrates a mature content strategy, justifying an advanced rating.",
+                },
+                data: {
+                    title: "Data Utilization",
+                    score: 82,
+                    color: colorPalette.secondary,
+                    evidence: [
+                        "Explicit discussion of AI-driven analytics in news articles.",
+                        "Mention of Microsoft Copilot integration for data retrieval and analysis.",
+                        "References to predictive analytics and data-driven decision making.",
+                        "Security as a Service offering suggests advanced data handling capabilities.",
+                    ],
+                    reasoning:
+                        "The organization shows high awareness and practical application of data utilization internally, particularly with Copilot. The score is prevented from being higher as there is no visible evidence of customer-facing data personalization on the website itself.",
+                },
+                tech: {
+                    title: "Technical Readiness",
+                    score: 92,
+                    color: colorPalette.accent,
+                    evidence: [
+                        "Modern website structure with organized navigation.",
+                        "Multiple advanced technical service offerings (Cloud, Security, Microsoft 365).",
+                        "ISO27001 certification mentioned, indicating high security standards.",
+                        "Active implementation of AI technologies like Copilot.",
+                    ],
+                    reasoning:
+                        "A strong technical foundation, proven by advanced service offerings, security certifications, and active AI implementation, indicates a very high level of readiness for adopting further AI technologies with minimal friction.",
+                },
+            };
+
+            const qnaData = [
+                // Core Score Questions
+                {
+                    q: "What is the overall AI Opportunity Score?",
+                    a: "The overall **AI Opportunity Score** is **87/100**, indicating the organization has a strong foundation and is highly prepared for advanced AI solutions.",
+                },
+                {
+                    q: "What does a score of 87/100 mean?",
+                    a: "It means the company is **highly prepared** for AI. The high score is driven by excellent Operational Processes (90) and Technical Readiness (92).",
+                },
+                {
+                    q: "Is the score S2A Verified?",
+                    a: "Yes, the score is **S2A Verified**, meaning it was subjected to the **Synthesize-Analyze-Advise (S2A)** protocol, ensuring the score is based on verifiable evidence.",
+                },
+                {
+                    q: "What is the Implementation Readiness?",
+                    a: "Implementation Readiness is assessed as **High**. The strong technical and operational foundations minimize deployment risks for the recommended solutions.",
+                },
+
+                // Dimensional Score Questions
+                {
+                    q: "What is the Operational Processes score?",
+                    a: "The **Operational Processes** score is **90/100**. This is based on evidence of specialized service offerings, digitized workflows, and internal AI usage for document prep.",
+                },
+                {
+                    q: "What evidence supports the high Technical Readiness score?",
+                    a: "The score is **92/100**, supported by evidence like **ISO27001 certification**, modern website structure, advanced service offerings (Cloud, Security), and the **active implementation of Copilot**.",
+                },
+                {
+                    q: "Why isn't the Customer Experience score 100?",
+                    a: "The score is **85/100**. While the design is professional, it lacks **visible personalization** or **interactive elements** like smart chatbots or personalized content for returning users.",
+                },
+                {
+                    q: "What supports the Data Utilization score of 82?",
+                    a: "The **82/100** score is supported by explicit discussions of **AI-driven analytics** in articles and the **Copilot integration**, showing practical, internal data utilization.",
+                },
+                {
+                    q: "Why is Content Management 88/100?",
+                    a: "The **88/100** score reflects **regular news updates**, consistent structure, and logical organization, indicating a mature and systematic content strategy.",
+                },
+
+                // Recommendation Questions
+                {
+                    q: "What is the top recommended AI solution?",
+                    a: "The top recommendation is an **AI-Powered Customer Support Agent** with a **Priority Score of 95/100**. This addresses customer experience and leverages your technical strength.",
+                },
+                {
+                    q: "Why is the Predictive Analytics Dashboard recommended?",
+                    a: "It has a **Priority Score of 88/100**. It directly addresses your stated interest in data-driven decision making and allows you to create a high-value service offering for your clients.",
+                },
+                {
+                    q: "What is the AI-Enhanced Documentation System?",
+                    a: "This solution, Priority Score **85/100**, involves extending the current use of Copilot to fully automate and enhance the creation, search, and maintenance of **consistent documentation** for your large team.",
+                },
+                {
+                    q: "Which recommendation is the most feasible to implement?",
+                    a: "The **AI-Powered Customer Support Agent** and the **AI-Enhanced Documentation System** both have an **Implementation Confidence of High** due to your existing technical foundation and internal Copilot usage.",
+                },
+
+                // Methodology Questions
+                {
+                    q: "What is the IA-AIOS-S2A Framework?",
+                    a: "It stands for **Industry-Adaptive AI Opportunity Scoring Framework with System 2 Attention**. It’s a two-part evaluation tool that assesses immediate appeal (System 1) and long-term strategic value (System 2) of AI projects.",
+                },
+                {
+                    q: "Explain System 1 Score.",
+                    a: "The **System 1 Score** captures the **immediate attractiveness** of an AI idea—the 'quick, gut feeling.' It measures factors like quick win potential, intuitive fit, and low implementation friction.",
+                },
+                {
+                    q: "Explain System 2 Score.",
+                    a: "The **System 2 Score** is a **deeper, analytical evaluation**—the 'smart, long-term planning.' It assesses strategic alignment, scalability, competitive differentiation, and long-term ROI profile.",
+                },
+                {
+                    q: "What is the S2A Cognitive Brake Protocol?",
+                    a: "This is a mandatory pause before scoring to ensure **transparency and accuracy**. It involves questioning initial impressions, challenging assumptions, verifying evidence, and checking for bias.",
+                },
+                {
+                    q: "What are Strategic Gems in the Quadrant Visualization?",
+                    a: "**Strategic Gems** are projects **High in both System 1 and System 2** scores. They are the most desirable projects, offering both quick wins and substantial long-term value. You should prioritize them.",
+                },
+
+                // General Questions
+                {
+                    q: "What is Microsoft Copilot's role in this audit?",
+                    a: "The mention of **Copilot integration** was used as **evidence** for both the **Operational Processes (90)** and **Technical Readiness (92)** scores, proving your existing capability for AI adoption.",
+                },
+                {
+                    q: "How can AI help with customer experience?",
+                    a: "AI can provide instant, 24/7 support via chatbots, personalize website content based on user behavior, and provide proactive service, all of which boost customer satisfaction scores (GSS).",
+                },
+                {
+                    q: "What is the biggest risk factor for the top recommendation?",
+                    a: "For the **AI-Powered Customer Support Agent**, the primary risk factor is the need for careful planning during **integration with existing support workflows**.",
+                },
+                {
+                    q: "Where can I find more information about this methodology?",
+                    a: "More details are contained in the full report documents: 'The AI Opportunity Scoring Framework.pdf' and 'Our thinking Methodology_ I.A.O.I.S.pdf'.",
+                },
+                {
+                    q: "Who should I contact about starting these projects?",
+                    a: "Please direct any inquiries about next steps, planning, or implementation to **hello@goodai.au**.",
+                },
+                {
+                    q: "What is the recommended next step?",
+                    a: "The immediate next step is to **prioritize the top recommendation** and begin the planning phase to ensure smooth integration with your existing technical stack.",
+                },
+                {
+                    q: "Is the company classified as Large or Small?",
+                    a: "The size classification is **Medium** (Confidence: Medium), which suggests flexibility and sufficient resources for implementing the recommended solutions.",
+                },
+                {
+                    q: "What industry is Integrated ICT in?",
+                    a: "Integrated ICT is classified as an **Information & Communications Technology (ICT) Services** provider (Confidence: High).",
+                },
+                {
+                    q: "Why is the Technical Readiness score so high?",
+                    a: "The high score of 92 is due to the combination of **ISO27001 certification**, modern web structure, and the **active implementation** of complex AI tools like Copilot, demonstrating a robust technical base.",
+                },
+                {
+                    q: "What is the biggest limitation of this assessment?",
+                    a: "The primary limitations include the inability to assess actual **backend systems** and processes directly, and the limited visibility into customer satisfaction metrics.",
+                },
+            ];
+
+            const getChatbotResponse = (query) => {
+                const lowerQuery = query.toLowerCase().trim();
+                // Look for the query in the pre-defined data, checking both question and answer parts for context
+                const relevantAnswer = qnaData.find(
+                    (item) =>
+                        item.q.toLowerCase().includes(lowerQuery) ||
+                        lowerQuery.includes(
+                            item.q.toLowerCase().slice(0, 10),
+                        ) ||
+                        item.a.toLowerCase().includes(lowerQuery),
+                );
+
+                if (relevantAnswer) {
+                    return relevantAnswer.a;
+                } else if (
+                    lowerQuery.includes("contact") ||
+                    lowerQuery.includes("talk to") ||
+                    lowerQuery.includes("human")
+                ) {
+                    return "I can only answer questions based on the audit report's data. For direct contact with our team regarding next steps, please email **hello@goodai.au**.";
+                } else {
+                    return "I couldn't find a precise answer in the audit report's data. Please try rephrasing your question or contact our team directly at **hello@goodai.au** for assistance.";
+                }
+            };
+
+            const chartTooltipCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                return Array.isArray(label) ? label.join(" ") : label;
+            };
+
+            const labelWrapper = (label) => {
+                if (label.length <= 16) return label;
+                const words = label.split(" ");
+                let lines = [],
+                    currentLine = "";
+                words.forEach((word) => {
+                    if ((currentLine + " " + word).trim().length > 16) {
+                        lines.push(currentLine.trim());
+                        currentLine = "";
+                    }
+                    currentLine += word + " ";
+                });
+                lines.push(currentLine.trim());
+                return lines;
+            };
+
+            document.addEventListener("DOMContentLoaded", function () {
+                // --- Chart Logic ---
+                new Chart(
+                    document
+                        .getElementById("overallScoreChart")
+                        .getContext("2d"),
+                    {
+                        type: "doughnut",
+                        data: {
+                            labels: ["Score", "Remaining"],
+                            datasets: [
+                                {
+                                    data: [87, 13],
+                                    backgroundColor: [
+                                        colorPalette.primary,
+                                        "rgba(40, 174, 167, 0.2)",
+                                    ],
+                                    borderColor: [
+                                        colorPalette.primary,
+                                        "rgba(40, 174, 167, 0.2)",
+                                    ],
+                                    borderWidth: 1,
+                                    cutout: "70%",
+                                },
+                            ],
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                tooltip: { enabled: false },
+                                legend: { display: false },
+                            },
+                        },
+                    },
+                );
+
+                new Chart(
+                    document.getElementById("breakdownChart").getContext("2d"),
+                    {
+                        type: "radar",
+                        data: {
+                            labels: Object.values(auditData).map((d) =>
+                                labelWrapper(d.title),
+                            ),
+                            datasets: [
+                                {
+                                    label: "Readiness Score",
+                                    data: Object.values(auditData).map(
+                                        (d) => d.score,
+                                    ),
+                                    backgroundColor: "rgba(40, 174, 167, 0.2)",
+                                    borderColor: colorPalette.primary,
+                                    pointBackgroundColor: colorPalette.primary,
+                                    pointBorderColor: "#fff",
+                                },
+                            ],
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            plugins: {
+                                tooltip: {
+                                    callbacks: { title: chartTooltipCallback },
+                                },
+                                legend: { display: false },
+                            },
+                            scales: {
+                                r: {
+                                    angleLines: { color: "rgba(0, 0, 0, 0.1)" },
+                                    grid: { color: "rgba(0, 0, 0, 0.1)" },
+                                    pointLabels: {
+                                        color: colorPalette.accent,
+                                        font: { weight: "bold", size: 13 },
+                                    },
+                                    ticks: {
+                                        backdropColor:
+                                            "rgba(255, 255, 255, 0.75)",
+                                        stepSize: 20,
+                                    },
+                                    suggestedMin: 40,
+                                    suggestedMax: 100,
+                                },
+                            },
+                        },
+                    },
+                );
+
+                // --- Tab Logic ---
+                const tabButtons = document.querySelectorAll(".tab-button");
+                const renderTabContent = (tabId) => {
+                    const data = auditData[tabId];
+                    const contentEl = document.getElementById(
+                        `${tabId}-content`,
+                    );
+                    contentEl.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                        <div>
+                            <h4 class="font-bold text-lg text-[${colorPalette.accent}] mb-3">Observable Evidence:</h4>
+                            <ul class="space-y-2 text-slate-600">${data.evidence.map((item) => `<li class="list-bullet ml-5">${item}</li>`).join("")}</ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg text-[${colorPalette.accent}] mb-3">Reasoning Chain:</h4>
+                            <p class="text-slate-600">${data.reasoning}</p>
+                        </div>
+                    </div>`;
+                };
+
+                tabButtons.forEach((button) =>
+                    button.addEventListener("click", (e) => {
+                        const tabId = e.target.dataset.tab;
+                        tabButtons.forEach((btn) =>
+                            btn.classList.remove("active"),
+                        );
+                        e.target.classList.add("active");
+                        document
+                            .querySelectorAll(".tab-content")
+                            .forEach((c) => c.classList.remove("active"));
+                        document
+                            .getElementById(`${tabId}-content`)
+                            .classList.add("active");
+                        renderTabContent(tabId);
+                    }),
+                );
+
+                renderTabContent("cx");
+
+                // --- Chatbot Logic ---
+                const chatToggle = document.getElementById("chat-toggle");
+                const chatWindow = document.getElementById("chat-window");
+                const chatMessages = document.getElementById("chat-messages");
+                const chatInput = document.getElementById("chat-input");
+                const sendButton = document.getElementById("send-button");
+                const closeButton = document.getElementById("close-button");
+
+                chatToggle.onclick = () => {
+                    chatWindow.style.display =
+                        chatWindow.style.display === "flex" ? "none" : "flex";
+                };
+                closeButton.onclick = () => {
+                    chatWindow.style.display = "none";
+                };
+
+                const appendMessage = (sender, text) => {
+                    const msg = document.createElement("div");
+                    msg.classList.add("message", sender);
+                    msg.innerHTML = text.replace(
+                        /\*\*(.*?)\*\*/g,
+                        "<strong>$1</strong>",
+                    );
+                    chatMessages.appendChild(msg);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                };
+
+                const handleUserInput = () => {
+                    const userText = chatInput.value.trim();
+                    if (userText === "") return;
+
+                    appendMessage("user", userText);
+                    chatInput.value = "";
+
+                    setTimeout(() => {
+                        const botResponse = getChatbotResponse(userText);
+                        appendMessage("bot", botResponse);
+                    }, 800);
+                };
+
+                sendButton.onclick = handleUserInput;
+                chatInput.addEventListener("keypress", (e) => {
+                    if (e.key === "Enter") {
+                        handleUserInput();
+                    }
+                });
+
+                // Initial welcome message from the bot
+                setTimeout(() => {
+                    appendMessage(
+                        "bot",
+                        "Hello! I am the Audit Assistant. I am trained on the full report and methodology. Ask me anything about the **scores, evidence, or recommendations**.",
+                    );
+                }, 500);
+            });
+        </script>
+    </body>
+</html>
